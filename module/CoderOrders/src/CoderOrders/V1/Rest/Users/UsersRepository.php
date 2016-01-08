@@ -58,6 +58,10 @@ class UsersRepository {
     {
         $hydrator = new ObjectProperty();
         $data = $hydrator->extract($data);
+        if(!empty($data['password'])){
+            $bcrypt = new Bcrypt();
+            $data['password'] = $bcrypt->create($data['password']);
+        }
         return $this->tableGateway->update($data, $id);
     }
 } 
