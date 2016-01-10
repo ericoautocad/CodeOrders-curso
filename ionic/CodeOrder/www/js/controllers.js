@@ -1,8 +1,16 @@
 angular.module('starter.controllers', [])
-    .controller('LoginCtrl', ['$scope', '$http', '$state',
-        function($scope, $http, $state){
+    .controller('LoginCtrl', ['$scope', '$http', '$state', 'OAuth', 'OAuthToken',
+        function($scope, $http, $state, OAuth, OAuthToken){
             $scope.login = function(data){
 
+                OAuth.getAccessToken(data).then(function(data){
+                    $state.go('tabs.orders');
+                    //console.log(OAuthToken.getToken());
+                }, function(data){
+                    $scope.error_login = "Usuário ou senha inválidos.";
+                });
+
+                /*
                 var dataPost = {
                     grant_type    : 'password',
                     client_id     : 'testclient',
@@ -22,7 +30,23 @@ angular.module('starter.controllers', [])
                     .error(function(error){
                         $scope.error_login = "Usuário ou senha inválidos.";
                     });
-
+                */
             }
         }
+    ])
+    .controller('OrdersCtrl',['$scope', '$http', '$state', function($scope, $http, $state){
+
+            $scope.getOrders = function(){
+                $http.get('http://localhost:8888/orders').then(
+                    function(data){
+                    $scope.orders = data;
+                    console.log(data._embedded.orders);
+                });
+            }
+
+            console.log('teste');
+
+        $scope.getOrders();
+
+    }
     ])
