@@ -34,17 +34,16 @@ angular.module('starter.controllers', [])
             }
         }
     ])
-    .controller('OrdersCtrl',['$scope', '$http', '$state', function($scope, $http, $state){
+    .controller('OrdersCtrl',['$scope', '$http', '$state',
+        function($scope, $http, $state){
 
             $scope.getOrders = function(){
                 $http.get('http://localhost:8888/orders').then(
                     function(data){
-                    $scope.orders = data;
-                    console.log(data._embedded.orders);
+                    $scope.orders = data.data._embedded.orders;
+                    //console.log(data.data._embedded.orders);
                 });
             }
-
-            console.log('teste');
 
         $scope.getOrders();
 
