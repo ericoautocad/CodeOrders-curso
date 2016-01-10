@@ -45,6 +45,11 @@ angular.module('starter.controllers', [])
                 });
             }
 
+            $scope.doRefresh = function(){
+                $scope.getOrders();
+                $scope.$broadcast('scroll.refreshComplete');
+            }
+
         $scope.getOrders();
 
     }

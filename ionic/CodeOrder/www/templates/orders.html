@@ -1,13 +1,26 @@
 <ion-header-bar class="bar-positive">
     <h1 class="title">Pedidos recentes</h1>
+    <button class="button button-icon ion-minus-circled" ng-click="data.showDelete = !data.showDelete"></button>
 </ion-header-bar>
 
+<div class="bar bar-subheader item-input-inset">
+    <label class="item-input-wrapper">
+        <i class="icon ion-search placeholder-icon"></i>
+        <input type="search" ng-model="search" placeholder="Buscar Orders" />
+    </label>
+</div>
 
-<ion-content >
+<ion-content class="has-subheader">
 
 
-   <ion-list>
-       <ion-item>#1234 - Total: R$22.33 - 2016-01-09 00:00:00</ion-item>
+    <ion-refresher on-refresh="doRefresh()"></ion-refresher>
+   <ion-list show-delete="data.showDelete">
+       <ion-item ng-repeat="order in orders |filter:search">
+
+           #{{order.id}} - Total: R${{order.total}} - {{order.created_at}}
+           <ion-delete-button class="ion-minus-circled" ng-click="onOrderDelete(order)"></ion-delete-button>
+       </ion-item>
+
    </ion-list>
 
 </ion-content>
