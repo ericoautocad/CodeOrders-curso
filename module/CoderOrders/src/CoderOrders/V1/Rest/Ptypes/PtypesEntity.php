@@ -5,4 +5,7 @@ use ArrayObject;
 
 class PtypesEntity extends ArrayObject
 {
+    public function __construct(){
+
+    }
 }

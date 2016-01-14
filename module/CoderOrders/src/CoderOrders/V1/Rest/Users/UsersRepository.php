@@ -64,4 +64,5 @@ class UsersRepository {
         }
         return $this->tableGateway->update($data, $id);
     }
+
 } 

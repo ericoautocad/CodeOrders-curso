@@ -49,4 +49,9 @@ class ProductsRepository {
 
         return $this->tableGateway->update($data, $id);
     }
+
+    public function delete($id)
+    {
+        return $this->tableGateway->delete($id);
+    }
 } 

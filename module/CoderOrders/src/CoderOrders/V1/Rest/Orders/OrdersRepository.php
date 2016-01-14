@@ -71,6 +71,16 @@ class OrdersRepository {
         return $this->tableGateway->update($data, array('id' => $id));
     }
 
+    public function delete($id)
+    {
+        $resultSet = $this->tableGateway->select(['id' => (Int) $id]);
+        $order =  $resultSet->current();
+        foreach($order['items'] as $item){
+            $this->orderItemTableGateway->delete($item['id']);
+        }
+        return $this->tableGateway->delete($id);
+    }
+
     public function insertItem(array $data)
     {
         $this->orderItemTableGateway->insert($data);
