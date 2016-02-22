@@ -1,6 +1,7 @@
 <?php
 namespace CoderOrders\V1\Rest\Orders;
 
+use CoderOrders\V1\Rest\Users\UsersRepository;
 use ZF\ApiProblem\ApiProblem;
 use ZF\Rest\AbstractResourceListener;
 
@@ -8,11 +9,13 @@ class OrdersResource extends AbstractResourceListener
 {
 
     private $repository;
+    private $repositoryUser;
     private $service;
 
-    public function __construct(OrdersRepository $repository, OrdersService $service)
+    public function __construct(OrdersRepository $repository, OrdersService $service, UsersRepository $repositoryUser)
     {
         $this->repository = $repository;
+        $this->repositoryUser = $repositoryUser;
         $this->service    = $service;
     }
     /**
@@ -23,6 +26,11 @@ class OrdersResource extends AbstractResourceListener
      */
     public function create($data)
     {
+        $user = $this->repositoryUser->findByUsername( $this->getIdentity()->getRoleId() );
+        if($user->getRole() != "salesman"){
+            return new ApiProblem(403, 'The user had not access to this info');
+        }
+
         $result =  $this->service->insert($data);
         if($result == "error"){
             return new ApiProblem(405, 'Error processing order');
@@ -61,7 +69,12 @@ class OrdersResource extends AbstractResourceListener
      */
     public function fetch($id)
     {
-        return $this->repository->find($id);
+        $user = $this->repositoryUser->findByUsername( $this->getIdentity()->getRoleId() );
+         if($user->getRole() != "salesman"){
+             return new ApiProblem(403, 'The user had not access to this info');
+         }
+
+        return $this->repository->find($id, $user->getId());
         //return new ApiProblem(405, 'The GET method has not been defined for individual resources');
     }
 
@@ -73,7 +86,11 @@ class OrdersResource extends AbstractResourceListener
      */
     public function fetchAll($params = array())
     {
-        return $this->repository->findAll();
+        $user = $this->repositoryUser->findByUsername( $this->getIdentity()->getRoleId() );
+        if($user->getRole() != "salesman"){
+            return new ApiProblem(403, 'The user had not access to this info');
+        }
+        return $this->repository->findAll($user->getId());
         //return new ApiProblem(405, 'The GET method has not been defined for collections');
     }
 

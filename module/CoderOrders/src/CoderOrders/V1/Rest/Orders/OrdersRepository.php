@@ -28,11 +28,12 @@ class OrdersRepository {
         $this->orderItemTableGateway = $orderItemTableGateway;
     }
 
-    public function findAll()
+    public function findAll($userId = null)
     {
         $hydrator = new ClassMethods();
         $hydrator->addStrategy('items', new OrderItemHydratorStrategy(new ClassMethods()));
-        $orders = $this->tableGateway->select();
+        // permite apenas que usuários vendedores  consultar apenas seus próprios pedidos.
+        $orders = $this->tableGateway->select(['user_id' => $userId]);
         $res = [];
 
         foreach($orders as $order){
@@ -52,9 +53,9 @@ class OrdersRepository {
         //return $res;
     }
 
-    public function find($id)
+    public function find($id, $userId = null)
     {
-        $resultSet = $this->tableGateway->select(['id' => (Int) $id]);
+        $resultSet = $this->tableGateway->select(['id' => (Int) $id, 'user_id' =>  (Int) $userId]);
         return $resultSet->current();
     }
 

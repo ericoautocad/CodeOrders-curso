@@ -1,19 +1,19 @@
 <?php
-namespace CoderOrders\V1\Rest\Products;
+namespace CoderOrders\V1\Rest\Clients;
 
 use CoderOrders\V1\Rest\Users\UsersRepository;
 use ZF\ApiProblem\ApiProblem;
 use ZF\Rest\AbstractResourceListener;
 
-class ProductsResource extends AbstractResourceListener
+class ClientsResource extends AbstractResourceListener
 {
     private $repository;
-    private $repositoryUser;
+    private $userRepository;
 
-    public function __construct(ProductsRepository $repository, UsersRepository $repositoryUser)
+    public function __construct(ClientsRepository $repository, UsersRepository $userRepository)
     {
         $this->repository = $repository;
-        $this->repositoryUser = $repositoryUser;
+        $this->userRepository = $userRepository;
     }
     /**
      * Create a resource
@@ -23,23 +23,23 @@ class ProductsResource extends AbstractResourceListener
      */
     public function create($data)
     {
-        $user = $this->repositoryUser->findByUsername( $this->getIdentity()->getRoleId() );
-         if($user->getRole() != "admin"){
-             return new ApiProblem(403, 'The user had not access to this info');
-         }
-         return $this->repository->insert($data);
-         //return new ApiProblem(405, 'The POST method has not been defined');
-     }
+        $user = $this->userRepository->findByUsername( $this->getIdentity()->getRoleId() );
+        if($user->getRole() != "admin"){
+            return new ApiProblem(403, 'The user had not access to this info');
+        }
+        return $this->repository->insert($data);
+        //return new ApiProblem(405, 'The POST method has not been defined');
+    }
 
-     /**
-      * Delete a resource
-      *
-      * @param  mixed $id
-      * @return ApiProblem|mixed
-      */
+    /**
+     * Delete a resource
+     *
+     * @param  mixed $id
+     * @return ApiProblem|mixed
+     */
     public function delete($id)
     {
-        $user = $this->repositoryUser->findByUsername( $this->getIdentity()->getRoleId() );
+        $user = $this->userRepository->findByUsername( $this->getIdentity()->getRoleId() );
         if($user->getRole() != "admin"){
             return new ApiProblem(403, 'The user had not access to this info');
         }
@@ -66,7 +66,7 @@ class ProductsResource extends AbstractResourceListener
      */
     public function fetch($id)
     {
-        $user = $this->repositoryUser->findByUsername( $this->getIdentity()->getRoleId() );
+        $user = $this->userRepository->findByUsername( $this->getIdentity()->getRoleId() );
         if(!in_array($user->getRole(), array("admin", "salesman"))){
             return new ApiProblem(403, 'The user had not access to this info');
         }
@@ -82,7 +82,7 @@ class ProductsResource extends AbstractResourceListener
      */
     public function fetchAll($params = array())
     {
-        $user = $this->repositoryUser->findByUsername( $this->getIdentity()->getRoleId() );
+        $user = $this->userRepository->findByUsername( $this->getIdentity()->getRoleId() );
         if(!in_array($user->getRole(), array("admin", "salesman"))){
             return new ApiProblem(403, 'The user had not access to this info');
         }
@@ -122,7 +122,7 @@ class ProductsResource extends AbstractResourceListener
      */
     public function update($id, $data)
     {
-        $user = $this->repositoryUser->findByUsername( $this->getIdentity()->getRoleId() );
+        $user = $this->userRepository->findByUsername( $this->getIdentity()->getRoleId() );
         if($user->getRole() != "admin"){
             return new ApiProblem(403, 'The user had not access to this info');
         }
